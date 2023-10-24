@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>live</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,viewport-fit=cover" />
+    <link rel="shortcut icon" href="#"/>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        line-height: 1.15; /* 1 */
+        -webkit-text-size-adjust: 100%; /* 2 */
+      }
+      .main {
+        width: 100%;
+        max-width: 1080px;
+        height: 720px;
+        margin: 0 auto;
+        height: 69vw !important;
+      }
+      .course-title {
+        height: 44px;
+        line-height: 44px;
+        padding: 0 16px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background-color: #fff;
+      }
+      .t_mobile .main {
+        width: 100%;
+        height: auto;
+      }
+      .content {
+        width: 60%;
+        padding-left: 10px;
+      }
+      .content button {
+        margin-top: 10px;
+        margin-left: 5px;
+        height: 30px;
+        line-height: 28px;
+        border: solid 1px #666;
+        border-radius: 3px;
+        cursor: pointer;
+        color: #333;
+        font-size: 12px;
+      }
+      .content button:active {
+        opacity: .8;
+        border: solid 1px green;
+        color: green;
+      }
+    </style>
+  </head>
+
+  <body style="background: #ccc">
+    <div class="main">
+<!--      <div class="course-title">课程标题课程标题课程标题课程标题课程标题课程标题</div>-->
+      <div id="idWrapper"></div>
+      <div class="content">
+        <button type="button" onclick="createPlayer()">
+          <strong>创建</strong>
+        </button>
+        <button type="button" onclick="play()"><strong>播放</strong></button>
+        <button type="button" onclick="pause()"><strong>暂停</strong></button>
+        <button type="button" onclick="resume()"><strong>恢复</strong></button>
+        <button type="button" onclick="destroy()"><strong>销毁</strong></button>
+        <button type="button" onclick="setAdPopUpParameter()"><strong>广告</strong></button>
+        <button type="button" onclick="liveanddefined()">
+          <strong>获取直播路线</strong>
+        </button>
+        <button type="button" onclick="getcurdefined()">
+          <strong>获取直播清晰度</strong>
+        </button>
+        <button type="button" onclick="getplayertype()">
+          <strong>获取播放器厂商</strong>
+        </button>
+        <button type="button" onclick="tofront()">
+          <strong>tofront</strong>
+        </button>
+        <button type="button" onclick="tobackend()">
+          <strong>tobackend</strong>
+        </button>
+        <button type="button" onclick="addvolume()"><strong>加音量</strong></button>
+        <button type="button" onclick="delvolume()"><strong>减音量</strong></button>
+        <button type="button" onclick="getvolume()"><strong>获取音量</strong></button>
+        <button type="button" onclick="switchws()"><strong>切换网宿</strong></button>
+        <button type="button" onclick="switchwsflv()"><strong>切换网宿FLV</strong></button>
+        <button type="button" onclick="switchtr()"><strong>切换腾讯</strong></button>
+        <button type="button" onclick="switchtrflv()"><strong>切换腾讯FLV</strong></button>
+        <!-- <button type="button" onclick="switchali()">
+          <strong>切换到阿里</strong>
+        </button> -->
+        <!-- <br /><br /> -->
+        <!-- <button type="button" onclick="replay()">
+          <strong>直播刷新</strong>
+        </button>
+        <button type="button" onclick="invokequit()">
+          <strong>调用quit</strong>
+        </button>
+        <button type="button" onclick="sendmsg()">
+          <strong>发消息</strong>
+        </button>
+        <button type="button" onclick="myInterval()">
+          <strong>测试定时器</strong>
+        </button>
+        <button type="button" onclick="clearMyInterval()">
+          <strong>销毁定时器</strong>
+        </button>
+        <br /> -->
+      </div>
+    </div>
+    <!-- <script src="jquery.min.js"></script> -->
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/es5-shim/4.5.15/es5-shim.min.js"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script> -->
+    <script src="./dist/wmplayer.js"></script>
+    <!-- 添加控制台信息，方便移动端查看log信息 -->
+    <script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <script>new VConsole();</script>
+    <script>
+      var liveType = ''
+      var hide = ''
+      var roomid = ''
+      var code = ''
+      var mid = ''
+      var videoId = ''
+      var btype = ''
+      var motherid = ''
+      var childmid = ''
+      var grpid = ''
+      var live_conf
+      var appid = 107
+
+      // function isFullScreen () {
+      // 	let res = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+      // 	if (res === undefined) res = false
+      // 	return res
+      // }
+      // function hanldePlayerIsFullScreen(){
+      //   if (!isFullScreen()) { // 退出全屏
+      //     console.log("my:exit full");
+      //   } else { // 全屏
+      //     console.log("my:enter full");
+      //   }
+      // }
+      // window.addEventListener('resize', hanldePlayerIsFullScreen);
+
+      // /**
+      //  * 初始化点参数
+      //  */
+      //  function createParm() {
+      //   roomid = '10002190'
+      //   code = 'C75JVHFN'
+      //   // mid = 'dhlu'
+      //   mid = '1626243558351566'
+      //   btype = 'dv'
+      //   motherid = '1'
+      //   childmid = '2'
+      //   grpid = '1234567890'
+      //   window.sign = '4PHkdiO9We9nmNcssTcUswdaC99jEB7a6CiwU3pLNiOnWyDurAIreonaMQjRJeGBF'
+      // }
+       /**
+       * 小白营初始化点播参数
+       */
+       function createParm() {
+        // origin
+        roomid = '10000483'
+        code = '2PFCABP2'
+        // videoId = getQueryString('videoId') || '10006874' //10006177
+        // mid = '1611204575297992'
+        mid = '1626243558351566'
+        btype = 'xby'
+        motherid = '1'
+        childmid = '2'
+        grpid = '1234567890'
+        // wlc-vod
+        window.sign = '2hX5HbKgy6bsyWu1hPdvmNHZ4LwJ5vMExvpjpgV9Fv8mQyH9m1p0nxroaXSvvIiL6'
+        
+      }
+      
+      /* 公开课初始化点播参数
+       */
+       function createParm2() {
+        // origin
+        roomid = '10006322'
+        code = 'YLREHGFL'
+        // videoId = getQueryString('videoId') || '10006874' //10006177
+        // mid = '1611204575297992'
+        mid = '1626243558351566'
+        btype = 'xby'
+        motherid = '1'
+        childmid = '2'
+        grpid = '1234567890'
+        // wlc-vod
+        window.sign = '2rJMV7QDROkjc0GuyKPds9yUnCIitnzdQZ4j9cv1gFe3a5unNidrxdMaxU6fv0cpF'
+        appid = '162'
+      }
+
+        /* 公开课初始化点播参数
+       */
+       function createParm1() {
+        // origin
+        roomid = '10001029'
+        code = '79G4PW5J'
+        // videoId = getQueryString('videoId') || '10006874' //10006177
+        // mid = '1611204575297992'
+        mid = '1626243558351566'
+        btype = 'xby'
+        motherid = '1'
+        childmid = '2'
+        grpid = '1234567890'
+        // wlc-vod
+        window.sign = '2mESWJMYQ32Od1b4HgzTb6ZoYzRZ0h6o6mhRKwQG8Wbe3eDAQYZdRqQNJ0Q6Qsdin'
+        appid = '107'
+      }
+
+      /**
+       * 创建直播配置文件
+       */
+      function GetLiveConf() {
+        var conf = {
+          consolelog: true, //是否打印log 到console，必填.
+          dev: 'test', //test,stage,product,测试环境，stage环境，生产环境。
+          auto: true,
+          idWrapper: 'idWrapper',
+          uid: mid, //学生登录id
+          appId: appid, //调用的应用id
+          autoplay: false,
+          roomId: roomid, //房间id
+          code: code, //分组code,
+          sign: window.sign,
+          live: true, // true 直播,false 点播
+          poster: '',
+          watermark: { // 水印
+            img: 'data:image/png;base64,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'
+          },
+          controls: {
+            open: true, // false表示不需要controls, 默认为true
+            headerContent: '课程标题课程标题课程标题课程标题课程', //显示的内容
+            feedback: false // 是否显示反馈按钮, 默认为true
+          }
+        }
+
+        //直播上报参数对象（和点播一样）
+        conf.log = {
+          classtype: 'dk', //dk,xby
+          cururl: 'http://h5.cn:8080', //当前页面cururl
+          role: '0', //用户角色,1 teacher 老师,2 assistant 助教，5 总助教，0 student 学生,3 visitor 游客
+          classId: '10', //某房间号下的，课次id.
+          mthid: '1100079', //母班id,
+          childid: '11000654', //子班id,如果是助教就填-
+          appversion: '1.0.0',
+          grpid:grpid,
+         // platformSource: 'web',
+        }
+
+        return conf
+      }
+      /**
+       * 初始化播放器
+       */
+      var myPlayer = null
+      function createPlayer() {
+        //...设置点播必备启动参数
+        createParm()
+        //...创建点播配置文件
+        live_conf = GetLiveConf()
+        //   console.log('li.conf', JSON.stringify(live_conf))
+        //...创建并初始化播放器
+        myPlayer = new wmPlayer(live_conf)
+        eventEmit()
+      }
+      window.onload = function () {
+        if (isMoblie()) {
+          document.getElementById('idWrapper').style.width = '100%'
+          document.getElementById('idWrapper').style.height = `${(window.screen.availWidth*9/16)}px`
+          document.body.setAttribute('class', 't_mobile')
+        }
+        window._tx_webrtc_enable = true
+        createPlayer()
+      }
+
+      function eventEmit() {
+        var wmPlayerEvents = Object.keys(myPlayer.wmPlayerEvents)
+        wmPlayerEvents.forEach(function (item) {
+          if (
+                  window.myPlayer.wmPlayerEvents[item] ==
+                  window.myPlayer.wmPlayerEvents.PLAYER_TIME_UPDATE
+          ) {
+            return
+          }
+          window.myPlayer.on(
+                  window.myPlayer.wmPlayerEvents[item],
+                  function (value) {
+                    console.log('li.live.' + item, value)
+                    if(value.type == 'onpagereload'){
+                      // prompt()
+                      window.location.reload();
+                      // alert(value.detail)
+                    }
+
+                    if(value.type == 'onadclick'){
+                      console.error('点击广告弹窗，通知业务处理:'+ value.detail.type)
+                     }
+                  }
+          )
+        })
+      }
+        //模拟广告弹窗
+      function setAdPopUpParameter(){
+        window.myPlayer.setAdPopUpParameter('http://wmdemo.cow8.cn/demo2.jpg', 'type click')
+      }
+
+      function one5speed() {
+        if (!myPlayer) {
+          return
+        }
+        myPlayer.setPlayRate(1.5)
+      }
+      function one75speed() {
+        if (null == myPlayer) {
+          return
+        }
+        myPlayer.setPlayRate(1.75)
+      }
+      function one2speed() {
+        if (null == myPlayer) {
+          return
+        }
+        myPlayer.setPlayRate(2)
+        console.log('22')
+      }
+      function originspeed() {
+        myPlayer.setPlayRate(1.0)
+      }
+      function tofront() {
+        console.log('111---进入 --- tofront')
+        myPlayer.tofront()
+        //模拟业务调用暂停
+        myPlayer.pause()
+      }
+
+      function tobackend() {
+        console.log('111---进入 --- tobackend')
+        myPlayer.tobackend()
+      }
+
+      function addvolume() {
+        //volume 设置参数，则是设置音量。
+        //不设置参数，则是返回音量。
+        var value = myPlayer.volume()
+        if (1.0 == value || value + 0.2 > 1.0) {
+          value = 1.0
+        } else {
+          value += 0.2
+        }
+        myPlayer.volume(value)
+        myPlayer.reportMsgLog('音量增加到' + value);
+      
+      }
+
+      function delvolume() {
+        var value = myPlayer.volume()
+        if (value <= 0.0 || value - 0.2 <= 0.0) {
+          value = 0.0
+        } else {
+          value -= 0.2
+        }
+        value=0
+        console.log('value111:', value)
+        myPlayer.volume(value)
+      }
+      function getvolume(){
+        console.log('value111:',  myPlayer.volume())
+      }
+      function quitcallback(res) {}
+      function invokequit() {
+        myPlayer.reportQuit(quitcallback)
+      }
+      function play() {
+        myPlayer.play()
+      }
+      function destroy() {
+        bInit = false
+        myPlayer.destroy()
+      }
+      function getcurdefined() {
+        if (myPlayer) {
+          var def = myPlayer.getCurDefined()
+          console.log('def:', def)
+        }
+      }
+      function getplayertype() {
+        if (myPlayer) {
+          var def = myPlayer.mPlayer.type
+          console.log('type:', def)
+        }
+      }
+      /**
+       * 获取live清晰度列表
+       */
+      function liveanddefined() {
+        var liveDeflist = myPlayer.getliveDefined()
+        console.log('livelist:', liveDeflist)
+      }
+
+      function gaoqing() {}
+      function chaoqing() {}
+      function liuchang() {}
+
+      function pause() {
+        myPlayer.pause()
+      }
+      function resume() {
+        myPlayer.resume()
+      }
+      function sendmsg() {
+        if (!myPlayer) return
+        var conf = GetVodConf()
+      }
+      function myInterval() {
+        // WmPlayer.myInterval();
+        window.gClassReportLog.StartWatchTime()
+      }
+      function clearMyInterval() {
+        // WmPlayer.clearMyInterval();
+        window.gClassReportLog.EndWatchTime()
+      }
+      function replay() {
+        if (!myPlayer) return
+        myPlayer.replay()
+      }
+      function switchws() {
+        var str = { line: 'WANGSU', defined: 'h' }
+        myPlayer.switchline('WANGSU', 'h')
+      }
+      function switchwsflv() {
+        // var str={line:"WANGSU",defined:"h"};
+        // myPlayer.switch(str);
+        myPlayer.switchline('WANGSU_HLS', 'h')
+      }
+      function switchtr() {
+        // var str = { line: 'WANGSU', defined: 'h' }
+        //   myPlayer.switch(str)
+        myPlayer.switchline('TENCENT_CLOUD', 'h')
+      }
+      function switchtrflv() {
+        // var str={line:"WANGSU",defined:"h"};
+        // myPlayer.switch(str);
+        myPlayer.switchline('TENCENT_CLOUD_HLS', 'h')
+      }
+      function switchali() {
+        myPlayer.switchline('ALIYUN', 'h')
+      }
+      function switchaliflv() {
+        myPlayer.switchline('ALIYUN_HLS', 'h')
+      }
+      function seek60() {
+        myPlayer.currentTime(60) //only for vod.
+      }
+      function isMoblie() {
+        var sUserAgent = navigator.userAgent.toLowerCase()
+        if (
+          /ipad|iphone|midp|rv:1.2.3.4|ucweb|android|windows ce|windows mobile/.test(
+            sUserAgent
+          )
+        ) {
+          return true
+        } else {
+          return false
+        }
+      }
+
+      function intervaltime() {
+        if ('false' == liveType) {
+          if (null != myPlayer) {
+            console.log('crtm:', myPlayer.currentTime())
+          }
+        }
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          if (myPlayer) {
+            console.log('switch tobackend')
+            myPlayer.tobackend()
+          }
+        } else {
+          setTimeout(function () {
+            if (myPlayer) {
+                 console.log('switch tofront')
+                 myPlayer.tofront()
+                 //模拟业务调用暂停
+                // myPlayer.pause()
+            }
+          }, 1000)
+        }
+      })
+
+      var userAgent = navigator.userAgent, // userAgent
+        rMsie = /.*(msie) ([\w.]+).*/, // ie
+        rFirefox = /.*(firefox)\/([\w.]+).*/, // firefox
+        rOpera = /(opera).+version\/([\w.]+)/, // opera
+        rChrome = /.*(chrome)\/([\w.]+).*/, // chrome
+        rSafari = /.*version\/([\w.]+).*(safari).*/ // safari
+
+      var jMeteor = {}
+      jMeteor.browser = {}
+      window.jMeteor = jMeteor
+      var ua = userAgent.toLowerCase()
+      function uaMatch(ua) {
+        var match = rMsie.exec(ua)
+        if (match != null) {
+          return { browser: match[1] || '', version: match[2] || '0' }
+        }
+        var match = rFirefox.exec(ua)
+        if (match != null) {
+          return { browser: match[1] || '', version: match[2] || '0' }
+        }
+        var match = rOpera.exec(ua)
+        if (match != null) {
+          return { browser: match[1] || '', version: match[2] || '0' }
+        }
+        var match = rChrome.exec(ua)
+        if (match != null) {
+          return { browser: match[1] || '', version: match[2] || '0' }
+        }
+        var match = rSafari.exec(ua)
+        if (match != null) {
+          return { browser: match[2] || '', version: match[1] || '0' }
+          if (match != null) {
+            return { browser: '', version: '0' }
+          }
+        }
+      }
+    </script>
+  </body>
+  <style>
+    video {
+      display: block;
+      overflow: hidden;
+    }
+  </style>
+  <!-- <style>
+    /* 暂停按钮 */
+    #idWrapper .media-controls .buttons-container .play-pause {
+      /* display: none !important; */
+    }
+
+    /* //全屏按钮 */
+    video::-webkit-media-controls-fullscreen-button {
+      /* display: none; */
+    }
+    video::-internal-media-controls-scrubbing-message {
+      display: block !important;
+    }
+    video::-internal-media-controls-overflow-button {
+      display: none !important;
+    }
+    video::-webkit-media-controls:not(.audio-only)
+      [pseudo='-webkit-media-controls-panel']
+      [pseudo='-internal-media-controls-overflow-button'] {
+      display: none !important;
+      background-color: red;
+    }
+    /* //播放按钮 */
+    video::-webkit-media-controls-play-button {
+      /* display: none; */
+    }
+    /* //进度条 */
+    video::-webkit-media-controls-timeline {
+      display: none;
+    }
+    /* //观看的当前时间 */
+    video::-webkit-media-controls-current-time-display {
+      display: none;
+    }
+    /* //剩余时间 */
+    video::-webkit-media-controls-time-remaining-display {
+      display: none;
+    }
+    /* //音量按钮 */
+    video::-webkit-media-controls-mute-button {
+      /* display: none;            */
+    }
+    video::-webkit-media-controls-toggle-closed-captions-button {
+      /* display: none;            */
+    }
+    /* //音量的控制条 */
+    video::-webkit-media-controls-volume-slider {
+      /* display: none;            */
+    }
+    /* //所有控件 */
+    video::-webkit-media-controls-enclosure {
+      /* display: none; */
+    }
+  </style> -->
+</html>

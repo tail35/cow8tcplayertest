@@ -1,0 +1,13 @@
+dist
+node_modules
+wmh5playersdk.zip
+package-lock.json
+.idea
+/.idea
+.DS_Store
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.idea

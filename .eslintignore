@@ -1,0 +1,8 @@
+/build/
+/node_modules/
+/dist/
+mobile-detect.min.js
+adapter.js
+TcPlayer-module-2.4.2.2.js
+*.scss
+*.css

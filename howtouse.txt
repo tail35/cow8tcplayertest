@@ -1,0 +1,15 @@
+
+1.
+	yarn install
+	yarn build
+
+	python -m http.httpserver
+
+	http://127.0.0.1:8080/live.html
+2. dist目录下放一空wmplayer.css的文件，才能编译成功。
+	或者代码中至少import 一次一个scss文件，才能编译成功。
+	import './controls.scss'
+	因为：
+	rollup.config.js 里面的scss()函数是根据import scss文件来生成一个${out.file}.scss文件.如果不import 至少一个，就无法生成。
+	rollup-plugin-inject-css.js 里面rf.readFileSync函数需要读取${out.file}.scss,没有的化就会报错。
+3.
